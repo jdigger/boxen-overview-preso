@@ -1,0 +1,192 @@
+section
+    h2 Brief Structure
+
+    p Boxen default installation at <code>/opt/boxen</code>
+
+    p All user edits to the <code>repo</code> subdirectory (<code>/opt/boxen/repo/</code>)
+
+section
+    h2 Editing <code>/opt/boxen/repo</code>
+
+    p Ordered roughly by likelihood that you'll modify something.
+
+    table
+        tbody
+            tr
+                td modules/
+                td the Puppet "modules" to load; <b>most customization happens here</b>
+            tr
+                td modules/people
+                td contains the module associated with a specific person&nbsp;
+                    +user
+            tr
+                td Puppetfile
+                td control file for Puppet Librarian&nbsp;
+                    +download
+            tr
+                td hiera/
+                td data-based configuration&nbsp;
+                    +hierarchy
+            tr
+                td modules/projects
+                td contains the module associated with projects&nbsp;
+                    +users
+            tr
+                td manifests/site.pp
+                td sets the defaults for the loaded modules
+            tr
+                td config/
+                td contains some files for tweeking more advanced features
+
+section
+    h2 Parts to Avoid Editing in <code>/opt/boxen/repo</code>
+
+    p Directories you should not directly interact with:
+
+    table
+        tbody
+            tr
+                td script/
+                td contains the primary scripts, including <code>boxen</code> itself&nbsp;
+                    +keyboard
+            tr
+                td shared/, vendor/
+                td cache for Librarian modules
+            tr
+                td bin/
+                td the shims for installed Ruby Gems, including Puppet
+            tr
+                td ../
+                td where Boxen installs a lot of its other control files
+            tr
+                td *.lock
+                td control files for version locking&nbsp;
+                    +lock
+
+    p
+        +warn
+        | The *.lock files are great when you understand them, and generally stay out of your way even when you don't. But they can be a bit of a pain when you merge in remote changes to the project... See <a href="https://github.com/boxen/our-boxen/blob/master/docs/faq.md">the FAQ</a>.
+
+section
+    h2 Boxen User Edits
+
+    p Directory: <code>/opt/boxen/repo/modules/people</code>
+
+    p By default {user} is based on your GitHub user ID.
+    p However, you can leverage parts and pieces from other users.
+
+    table
+        tbody
+            tr
+                td manifests/{user}.pp
+                td primary manifest for a user
+            tr
+                td manifests/{user}/
+                td where your "subclasses" go
+            tr
+                td files/{user}/
+                td static resources for the user
+            tr
+                td templates/{user}/
+                td templatized resources for the user
+            tr
+                td spec/
+                td unit tests for the manifests
+
+section
+    h2 Example User Manifest
+
+    p modules/people/jdigger.pp
+    pre: code.puppet.
+        class people::jdigger {
+            include people::jdigger::dotfiles
+            include people::jdigger::bin
+            include people::jdigger::applications
+            include people::jdigger::ruby
+            include people::jdigger::git
+            include people::jdigger::sublime_text_2
+            include people::jdigger::osx
+        }
+
+    p Just as it's good practice in OOD to delegate low-level details to subclasses, you should do the same in Puppet class design as well.
+
+section
+    h2 Example "Sub Class"
+
+    p modules/people/jdigger/sublime_text_2.pp
+    pre: code.puppet.
+        class people::jdigger::sublime_text_2 {
+          include 'sublime_text_2'# 1
+
+          $home = "/Users/${::boxen_user}"
+
+          file { "${home}/Library/Application Support/Sublime Text 2/Packages/User":
+            ensure => 'directory',
+            owner  => $::boxen_user,
+            mode   => '0755',
+          } # 2
+          -> # 3
+          file { "${home}/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings":
+            source  => 'puppet:///modules/people/jdigger/sublime-settings',
+          } # 4
+        }
+    ol
+        li make use of the "general" <code>sublime_text_2</code> module
+        li ensure that the user preferences directory exists
+        li shorthand to declare that the following resource needs the previous one to be applied first
+        li I want Sublime Text 2 to behave the same for me regardless of what machine I'm on, so any changes I make to the settings are done in the module
+
+section
+    h2 Puppet Librarian: Puppetfile
+
+    p: a(href="https://github.com/rodjek/librarian-puppet") Puppet Librarian usage/syntax
+        +external
+
+    p some standard entries
+    pre: code.puppet.
+        github "dnsmasq",  "1.0.1"
+        github "gcc",      "2.0.100"
+        github "git",      "2.3.0"
+        github "homebrew", "1.6.2"
+
+    p Where <code>github</code> is a function that translates
+    pre: code.puppet.
+        github "git", "2.3.0"
+    p to
+    pre: code.puppet.
+        mod "git", "2.3.0", :github_tarball => "boxen/puppet-git"
+
+section.puppet-librarian
+    h2 Puppet Librarian: Finding Modules
+
+    p: a(href="https://github.com/boxen?query=puppet-") Search for Module Names
+        +external
+
+    a(href="https://github.com/boxen/puppet-intellij"): img(src="images/boxen_puppet-intellij_releases_tab.png", style="height: 200px; ")
+    p
+    a(href="https://github.com/boxen/puppet-intellij/releases"): img(src="images/releases-boxen_puppet-intellij.png", style="width: 350px; ")
+
+section
+    h2 Boxen Facter Extensions
+
+    p snippet from shared/lib/facter/boxen.rb
+    pre: code.puppet.
+        dot_boxen   = "\#{ENV['HOME']}/.boxen"
+        user_config = "\#{dot_boxen}/config.json"
+
+        require "boxen/config"
+        config = Boxen::Config.load
+
+        facts["github_login"]  = config.login
+        facts["github_email"]  = config.email
+        facts["github_name"]   = config.name
+        facts["github_token"]  = config.token
+
+        facts["boxen_home"]     = config.homedir
+        facts["boxen_srcdir"]   = config.srcdir
+        facts["boxen_repodir"]  = config.repodir
+        facts["boxen_reponame"] = config.reponame
+        facts["boxen_user"]     = config.user
+        #..
+
+    p The "cached" values for those are in <code>/opt/boxen/config/boxen/defaults.json</code>

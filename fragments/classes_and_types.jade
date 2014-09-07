@@ -1,0 +1,108 @@
+section
+    h1 Defining Classes
+
+section
+    p The <b>primary</b> way of referencing groups of Resources is via Classes.
+
+    p A Class may take parameters for configuration.
+
+    p from puppet-intellij (slide-ware version)
+    pre: code.puppet.
+        class intellij($edition='community', $version='13.1.1') {
+          case $edition {
+            'community': { $edition_real = 'IC' }
+            'ultimate': { $edition_real = 'IU' }
+            default: { fail('Class[intellij]: parameter edition must be community or ultimate') }
+          }
+
+          package { "IntelliJ-IDEA-${edition_real}-${version}":
+            provider => 'appdmg_eula',
+            source   => "http://download.jetbrains.com/idea/idea${edition_real}-${version}.dmg",
+          }
+        }
+
+section
+    h2 Defining Classes (annotated)
+
+    pre: code.puppet.
+        class intellij($edition='community', $version='13.1.1') {
+          case $edition { # 1
+            'community': { $edition_real = 'IC' }
+            'ultimate': { $edition_real = 'IU' }
+            default: { fail('Class[intellij]: parameter edition must be community or ultimate') } # 2
+          }
+
+          package { "IntelliJ-IDEA-${edition_real}-${version}": # 3
+            provider => 'appdmg_eula', # 4
+            source   => "http://download.jetbrains.com/idea/idea${edition_real}-${version}.dmg", # 5
+          }
+        }
+    ol
+        li Conditionals for setting "private" variable
+        li Able to fail the configuration before anything is applied
+        li Variable substitution. (Resource names must be unique)
+        li Install from .dmg, auto-accepting the EULA
+        li Where to download the installation package from
+
+section
+    h2 Calling Classes
+
+    p Explicitly calling with parameters
+    pre: code.puppet.
+        class { "intellij":
+            edition => 'community',
+            version => '13.1.1',
+        }
+
+    p Calling with default parameters
+    pre: code.puppet.
+        class { "intellij": }
+
+    p Importing with default parameters
+    pre: code.puppet.
+        import "intellij"
+
+    p
+        +tip
+        The <code>import</code> form has the advantage over <code>class {:}</code> in that <code>class {:}</code> can only appear once in your entire graph. <code>import</code> will add the class resource if it's not yet defined, or ignore it if not.
+
+section
+    h2 Calling Classes with Hiera
+
+    p Want simple resource declarations <b>AND</b> centralized/powerful configuration data (like versions)? That's what <a href="http://docs.puppetlabs.com/hiera/1/complete_example.html">Hiera</a> is for...&nbsp;
+        +magic
+
+    p Importing with parameter lookup
+    pre: code.puppet.
+        import "intellij"
+    p Hiera YAML configuration
+    pre: code.puppet.
+        intellij::edition: 'ultimate'
+        intellij::version: '13.1.2'
+
+    p Separates usage from configuration
+
+section
+    h2 Defined Types
+
+    p Defined Types are similar to Classes, providing scoping, resource management, ability to pass in parameters, etc.
+
+section
+    p Unlike Classes, you can have multiple instances of Defined Types.
+    p Because of that, you can't use <code>include</code> or tools like Hiera to configure them.
+
+section
+    p from the <code>boxen/puppet-sublime_text_2</code> modules
+    pre: code.puppet.
+        define sublime_text_2::package($source) {
+          require sublime_text_2::config
+
+          repository { "${sublime_text_2::config::packagedir}/${name}":
+            source => $source
+          }
+        }
+
+section
+    p
+        +tip
+        | If you're trying to decide between declaring something <code>class</code> or <code>define</code>, err toward <code>class</code>
