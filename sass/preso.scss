@@ -1,3 +1,10 @@
+@mixin transform-translate($x, $y) {
+    -webkit-transform: translate($x, $y);
+    -moz-transform: translate($x, $y);
+    -ms-transform: translate($x, $y);
+    transform: translate($x, $y);
+}
+
 div.code.note {
     background-color: #ddeeee;
     box-shadow: 0 0 6px black;
@@ -142,20 +149,20 @@ section.summary p {
     font-weight: bold;
 }
 
-.vcenter {
-    position: absolute;
-    top: 50%;
-    left: auto;
-    right: auto;
-    transform: translateY(-50%);
-}
+// .vcenter {
+//     position: absolute;
+//     top: 50%;
+//     left: auto;
+//     right: auto;
+//     transform: translateY(-50%);
+// }
 
-.slides h1 {
+.vcenter, .slides h1 {
     position: absolute;
     top: 50%;
-    transform: translate(-50%, -50%);
+    @include transform-translate(-50%, -50%);
     left: 50%;
-    width: 100%;
+    width: 80%;
 }
 
 .reveal .slides {
