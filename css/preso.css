@@ -58,3 +58,6 @@ code.puppet span.subst, code.puppet span.symbol {
   color: lightgreen; }
 code.puppet span.comment {
   color: pink; }
+
+code.yaml span.comment {
+  color: lightblue; }
