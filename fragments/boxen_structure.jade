@@ -120,7 +120,7 @@ section
         p Just as it's good practice in OOD to delegate low-level details to subclasses, you should do the same in Puppet class design as well
 
 section
-    .vcenter(style="width: 90%; ")
+    .vcenter
         h2 Example "Sub Class"
 
         p modules/people/jdigger/sublime_text_2.pp
@@ -140,7 +140,7 @@ section
                 source  => 'puppet:///modules/people/jdigger/sublime-settings',
               } # 4
             }
-        ol(style="font-size: 70%; line-height: 1.1em; ")
+        ol(style="font-size: 80%; line-height: 1.1em; ")
             li make use of the "general" <code>sublime_text_2</code> module
             li ensure that the user preferences directory exists
             li shorthand to declare that the following resource needs the previous one to be applied first

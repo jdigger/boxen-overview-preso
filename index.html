@@ -7,7 +7,7 @@
 }
 </script><!--[if lt IE 9]>
 <script src="lib/js/html5shiv.js"></script>
-<![endif]--><link rel="stylesheet" href="css/font-awesome.css"></head><body><div class="reveal"><div class="slides"><section class="title-slide"><h2 style="font-size: 120px;">Boxen Overview</h2><h3>Powering Workstations With Git & Puppet</h3><p><small>Created by &nbsp;<a href="https://github.com/jdigger/">Jim Moore</a><span> / </span><a href="http://twitter.com/jdiggerj">@jdiggerj</a></small></p><p><img src="images/collabocats.jpg" class="collabocats"></p></section><section><h1>Why?</h1></section><section><div class="vcenter"><p>"Infrastructure as code" is accepted for our servers, but why don't we apply it to our workstations?</p></div></section><section><div class="vcenter"><p>Boxen is a tool that enables not just automated installation of software, but also configuration of our desktops</p></div></section><section><div class="vcenter"><p>Boxen puts the developer in control of their desktop (as if they weren't anyway) but also scales across companies, teams, and even home vs work computers</p></div></section><section><div class="vcenter"><p>We will cover the basic ideas and tools involved, as well showing some of the things you can configure (hint: everything) for really pimping your machine and making upgrading your environment much faster and consistent WAAAY beyond dotfiles</p></div></section><section><h1>Why Boxen:<br/> Consistency & Repeatability</h1></section><section><div class="vcenter"><p class="strong">No more "follow the steps on the wiki at ..."</p></div></section><section><div class="vcenter"><p class="strong">Consistently configure your dev environment</p></div></section><section><div class="vcenter"><p class="strong">Remove manual steps</p></div></section><section><h1>Why Boxen:<br/> Computers Are Faster Than Humans</h1></section><section><div class="vcenter"><p class="strong">Small tax on initial customizations</p></div></section><section><div class="vcenter"><p class="strong">Graceful iterative customizations</p></div></section><section><div class="vcenter"><p class="strong">Pays back the FIRST time it is re-used</p></div></section><section><div class="vcenter"><p class="strong">Install apps AND configure them <br/> including a lot of the settings that normally require manual changes</p></div></section><section><h1>Why Boxen:<br/>Geek Cool</h1></section><section><div class="vcenter"><p class="strong">A tool meant for developers/power-users</p></div></section><section><div class="vcenter"><p class="strong">Reinforce DevOps mantra "infrastructure is code"</p><p>&nbsp;</p><p>Everything is versionable (thus rollbacks) and diff-able</p><p>&nbsp;</p><p>Differences between environments can easily be handled</p></div></section><section><div class="vcenter"><p class="strong">Apply server configuration technology to your workstation</p></div></section><section><div class="vcenter"><h2 style="font-size: 120px;">Why Boxen:<br/>Desktops are "Special"</h2><h3>How do you automate installation/config on a Mac?<br/>(or any "desktop" OS)?</h3></div></section><section><div class="vcenter"><p class="strong">Lack of exposed software versioning</p></div></section><section><div class="vcenter"><p class="strong">Installation assumes single user</p></div></section><section><div class="vcenter"><p class="strong">Installation assumes a GUI</p></div></section><section><h1>Requirements</h1></section><section><div class="vcenter"><ul><li>Mac OS X 10.8+ only</li><li>XCode CLI (slightly tricky pre-Mavericks)</li></ul></div></section><section><div class="vcenter"><h2>Getting Started: The Bootstrap</h2><pre><code class="bash">sudo mkdir -p /opt/boxen
+<![endif]--><link rel="stylesheet" href="css/font-awesome.css"></head><body><div class="reveal"><div class="slides"><section class="title-slide"><h2 style="font-size: 120px;">Boxen Overview</h2><h3>Powering Workstations With Git & Puppet</h3><p><small>Created by &nbsp;<a href="https://github.com/jdigger/">Jim Moore</a><span> / </span><a href="http://twitter.com/jdiggerj">@jdiggerj</a></small></p><p><img src="images/collabocats.jpg" class="collabocats"></p></section><section><h1>Why Boxen?</h1></section><section><div class="vcenter"><p>"Infrastructure as code" is accepted for our servers, but why don't we apply it to our workstations?</p></div></section><section><div class="vcenter"><p>Boxen is a tool that enables not just automated installation of software, but also configuration of our desktops</p></div></section><section><div class="vcenter"><p>Boxen puts the developer in control of their desktop (as if they weren't anyway) but also scales across companies, teams, and even home vs work computers</p></div></section><section><div class="vcenter"><p>We will cover the basic ideas and tools involved, as well showing some of the things you can configure (hint: everything) for really pimping your machine and making upgrading your environment much faster and consistent WAAAY beyond dotfiles</p></div></section><section><h1>Consistency & Repeatability</h1></section><section><div class="vcenter"><p class="strong">No more "follow the steps on the wiki at ..."</p></div></section><section><div class="vcenter"><p class="strong">Consistently configure your dev environment</p></div></section><section><div class="vcenter"><p class="strong">Remove manual steps</p></div></section><section><h1>Computers Are Faster Than Humans</h1></section><section><div class="vcenter"><p class="strong">Small tax on initial customizations</p></div></section><section><div class="vcenter"><p class="strong">Graceful iterative customizations</p></div></section><section><div class="vcenter"><p class="strong">Pays back the FIRST time it is re-used</p></div></section><section><div class="vcenter"><p class="strong">Install apps AND configure them <br/> including a lot of the settings that normally require manual changes</p></div></section><section><h1>Geek Cool</h1></section><section><div class="vcenter"><p class="strong">A tool meant for developers/power-users</p></div></section><section><div class="vcenter"><p class="strong">Reinforce DevOps mantra "infrastructure is code"</p><p>&nbsp;</p><p>Everything is versionable (thus rollbacks) and diff-able</p><p>&nbsp;</p><p>Differences between environments can easily be handled</p></div></section><section><div class="vcenter"><p class="strong">Apply server configuration technology to your workstation</p></div></section><section><div class="vcenter"><h2 style="font-size: 120px;">Desktops are "Special"</h2><h3>How do you automate installation/config on a Mac?<br/>(or any "desktop" OS)?</h3></div></section><section><div class="vcenter"><p class="strong">Lack of exposed software versioning</p></div></section><section><div class="vcenter"><p class="strong">Installation assumes single user</p></div></section><section><div class="vcenter"><p class="strong">Installation assumes a GUI</p></div></section><section><h1>Requirements</h1></section><section><div class="vcenter"><ul><li>Mac OS X 10.8+ only</li><li>XCode CLI (slightly tricky pre-Mavericks)</li></ul></div></section><section><div class="vcenter"><h2>Getting Started: The Bootstrap</h2><pre><code class="bash">sudo mkdir -p /opt/boxen
 sudo chown ${USER}:staff /opt/boxen
 git clone [your_boxen_repo] /opt/boxen/repo
 cd /opt/boxen/repo
@@ -160,7 +160,7 @@ Service {
     include people::jdigger::sublime_text_2
     include people::jdigger::osx
 }
-</code></pre><p>Just as it's good practice in OOD to delegate low-level details to subclasses, you should do the same in Puppet class design as well</p></div></section><section><div style="width: 90%; " class="vcenter"><h2>Example "Sub Class"</h2><p>modules/people/jdigger/sublime_text_2.pp</p><pre><code class="puppet">class people::jdigger::sublime_text_2 {
+</code></pre><p>Just as it's good practice in OOD to delegate low-level details to subclasses, you should do the same in Puppet class design as well</p></div></section><section><div class="vcenter"><h2>Example "Sub Class"</h2><p>modules/people/jdigger/sublime_text_2.pp</p><pre><code class="puppet">class people::jdigger::sublime_text_2 {
   include 'sublime_text_2'# 1
   
   $home = "/Users/${::boxen_user}"
@@ -174,7 +174,7 @@ Service {
   file { "${home}/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings":
     source  => 'puppet:///modules/people/jdigger/sublime-settings',
   } # 4
-}</code></pre><ol style="font-size: 70%; line-height: 1.1em; "><li>make use of the "general" <code>sublime_text_2</code> module</li><li>ensure that the user preferences directory exists</li><li>shorthand to declare that the following resource needs the previous one to be applied first</li><li>I want Sublime Text 2 to behave the same for me regardless of what machine I'm on, so any changes I make to the settings are done in the module</li></ol></div></section><section><div class="vcenter"><h2>Puppet Librarian: Puppetfile</h2><p><a href="https://github.com/rodjek/librarian-puppet">Puppet Librarian usage/syntax<i class="fa fa-external-link"></i></a></p><p>some standard entries</p><pre><code class="puppet">github "dnsmasq",  "1.0.1"
+}</code></pre><ol style="font-size: 80%; line-height: 1.1em; "><li>make use of the "general" <code>sublime_text_2</code> module</li><li>ensure that the user preferences directory exists</li><li>shorthand to declare that the following resource needs the previous one to be applied first</li><li>I want Sublime Text 2 to behave the same for me regardless of what machine I'm on, so any changes I make to the settings are done in the module</li></ol></div></section><section><div class="vcenter"><h2>Puppet Librarian: Puppetfile</h2><p><a href="https://github.com/rodjek/librarian-puppet">Puppet Librarian usage/syntax<i class="fa fa-external-link"></i></a></p><p>some standard entries</p><pre><code class="puppet">github "dnsmasq",  "1.0.1"
 github "gcc",      "2.0.100"
 github "git",      "2.3.0"
 github "homebrew", "1.6.2"
@@ -274,20 +274,22 @@ Reveal.initialize({
     controls: false,
     progress: true,
     history: true,
-    center: false,
+    center: true,
     keyboard: true,
+    zoom: true,
     
     theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-    transition: Reveal.getQueryHash().transition || 'cube', // default/cube/page/concave/zoom/linear/fade/none
+    transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
     transitionSpeed: 'fast',
     
     // The "normal" size of the presentation, aspect ratio will be preserved
     // when the presentation is scaled to fit different resolutions. Can be
     // specified using percentage units.
     //width: '90%',
-    //- height: '90%',
+    //height: '90%',
     width: 1300,
-    //height: 750,
+    //- width: 1024,
+    //- height: 768,
     
     // Parallax scrolling
     // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
@@ -300,6 +302,6 @@ Reveal.initialize({
         // { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
         { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
         { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-        // { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
     ]
 });</script></div></div></body></html>

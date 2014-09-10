@@ -8,20 +8,22 @@ script(type="text/javascript")
         controls: false,
         progress: true,
         history: true,
-        center: false,
+        center: true,
         keyboard: true,
+        zoom: true,
 
         theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-        transition: Reveal.getQueryHash().transition || 'cube', // default/cube/page/concave/zoom/linear/fade/none
+        transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
         transitionSpeed: 'fast',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         //width: '90%',
-        //- height: '90%',
+        //height: '90%',
         width: 1300,
-        //height: 750,
+        //- width: 1024,
+        //- height: 768,
 
         // Parallax scrolling
         // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
@@ -34,6 +36,6 @@ script(type="text/javascript")
             // { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
             { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
             { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-            // { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+            { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
         ]
     });

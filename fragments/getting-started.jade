@@ -1,0 +1,30 @@
+section
+    h1 Requirements
+
+section
+    .vcenter
+        ul
+            li Mac OS X 10.8+ only
+            li XCode CLI (slightly tricky pre-Mavericks)
+
+section
+    .vcenter
+        h2 Getting Started: The Bootstrap
+
+        pre
+            code.bash.
+                sudo mkdir -p /opt/boxen
+                sudo chown ${USER}:staff /opt/boxen
+                git clone [your_boxen_repo] /opt/boxen/repo
+                cd /opt/boxen/repo
+                ./script/boxen [--no-fde]
+        p * defaults to Full Disk Encryption
+
+section
+    .vcenter
+        h2 Alternate: Boxen Web
+
+        ul
+            li <a href="https://github.com/boxen/boxen-web">https://boxen.github.com/boxen-web</a>
+                ul
+                    li uses heroku to provide customized homepage & OAuth
