@@ -3,7 +3,7 @@ section
 
 section
     .vcenter
-        ul
+        ul(style="font-size: 2em; line-height: 2.5em;")
             li Mac OS X 10.8+ only
             li XCode CLI (slightly tricky pre-Mavericks)
 
@@ -28,3 +28,134 @@ section
             li <a href="https://github.com/boxen/boxen-web">https://boxen.github.com/boxen-web</a>
                 ul
                     li uses heroku to provide customized homepage & OAuth
+
+
+section
+    h1 Primary Components
+
+section.software
+    .vcenter
+        h2 Software
+
+        table
+            tbody
+                tr
+                    td GitHub
+                    td version control and user management
+                tr
+                    td Puppet
+                    td system configuration
+                tr
+                    td Puppet Librarian
+                    td module management for Puppet
+                tr
+                    td Homebrew
+                    td provides "most" of the software
+                tr
+                    td Ruby (rbenv)
+                    td most of the scripting
+
+section.providers
+    .vcenter
+        h2 Software Package Providers
+
+        p There are many "providers" of software. Some examples:
+
+        table
+            tbody
+                tr
+                    td homebrew
+                    td the default for Boxen, it's one of the most fully capable
+                tr
+                    td appdmg
+                    td if *.dmg contains *.app to drag into /Applications
+                tr
+                    td appdmg_eula
+                    td if *.dmg asks for a license agreement when it is opened and contains *.app to drag into /Applications
+                tr
+                    td pkgdmg
+                    td if *.pkg contains installer
+                tr
+                    td compressed_app
+                    td if *.zip to unzip & place into /Applications
+        p Other sources include <b>gem</b>, <b>npm</b>, <b>pip</b>, ...
+
+section.provider-features
+    .vcenter
+        h2 Provider Features
+
+        p The OS X packaging providers are, in general, incredibly "limited"
+
+section.provider-features
+    .vcenter
+        p By definition, providers install software. Some can do more:
+
+        table
+            thead
+                th Provider
+                th Uninstall
+                th Versionable
+                th Updatable
+            tbody
+                tr
+                    td appdmg
+                    +td_circle
+                    +td_circle
+                    +td_circle
+                tr
+                    td appdmg_eula
+                    +td_circle
+                    +td_circle
+                    +td_circle
+                tr
+                    td compressed_app
+                    +td_check
+                    +td_circle
+                    +td_circle
+                tr
+                    td compressed_pkg
+                    +td_circle
+                    +td_circle
+                    +td_circle
+                tr
+                    td homebrew
+                    +td_check
+                    +td_check
+                    +td_check
+                tr
+                    td macports
+                    +td_check
+                    +td_check
+                    +td_check
+                tr
+                    td pkgdmg
+                    +td_circle
+                    +td_circle
+                    +td_circle
+
+section.provider-features
+    .vcenter
+        p Providers (other than <b>homebrew</b> & <b>macports</b>) track package installation at <b>/var/db/.puppet_{provider}_installed_{package_name}</b>
+        p &nbsp;
+        p Therefore, to re-install, you must <b>delete</b> the file above before running boxen again
+
+section
+    .vcenter
+        h2 Boxen Limitations
+        p The <b>primary</b> limitation is that it's not (yet?) able to install software from the Apple App Store
+        p &nbsp;
+        p Otherwise install and configure your entire system automatically without manual steps
+        p The time cost is primarily download time
+
+
+section
+    .vcenter
+        h2 Customize & Iterate
+        ul
+            li Edit
+                ul
+                    li modules
+                    li packages
+                    li people
+                    li ...
+            li re-run <b>/opt/boxen/script/boxen</b>

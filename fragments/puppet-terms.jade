@@ -1,0 +1,75 @@
+section
+    h1 Puppet Terms
+
+section
+    .vcenter
+        h2 Basic Structure
+        p: span.small: b (Highly, highly simplified)
+        table
+            tbody
+                tr
+                    td Module
+                    td Effectively Puppet's "library" unit
+                tr
+                    td Manifest
+                    td The file containing the description/script
+                tr
+                    td Resource
+                    td A unit of configuration (e.g., "file", "package")
+                tr
+                    td Class
+                    td A singleton managing Resources
+                tr
+                    td Defined Type
+                    td Can have more than one instance managing Resources
+
+        p: a(href="http://docs.puppetlabs.com/references/glossary.html")
+            | Puppet Glossary
+            +external
+        p In general, "Module" has at least one "Manifest" which has at least one "Class"
+
+section
+    .vcenter
+        h2 Puppet Terms:<br/>Resources
+        p Every resource has:
+        ul
+            li Type (such as <b>package</b>, <b>file</b>, <b>exec</b>, ...)
+            li Title
+            li >1 attributes
+                ul
+                    li e.g., an "ensure" attribute with a value of "present"
+        p &nbsp;
+        p Resources can (and often do) depend on other resources
+        p Puppet will build a dependency graph to make sure everything is applied in the correct order
+        p Each resource title must be unique in the DAG
+
+
+section
+    .vcenter
+        h2 Puppet Terms:<br>Misc
+        table
+            tbody
+                tr
+                    td Facts (Facter)
+                    td Descrete information about the machine (FQDN, IP addr, OS, etc.) gathered by "facter"
+                tr
+                    td Puppet Librarian
+                    td Used for managing Puppet Modules
+                tr
+                    td Hiera
+                    td <u>Hiera</u>rchical data: a flexible way of providing configuration data based on "facts"
+                tr
+                    td Profiles & Roles
+                    td Not covered here, but a Puppet Enterprise convention for organizing Hiera data
+
+section
+    .vcenter
+        h2 Boxen Terms
+        table
+            tbody
+                tr
+                    td User
+                    td Defined by the "fact": <code>::boxen_user</code>
+                tr
+                    td Project
+                    td A grouping meant for "make sure people on this team have at least this configuration"; you can have multiple "projects" applied to a machine

@@ -1,10 +1,11 @@
 section
+    h1 Brief Structure
+
+section
     .vcenter
-        h2 Brief Structure
+        p.strong Boxen default installation at <code>/opt/boxen</code>
 
-        p Boxen default installation at <code>/opt/boxen</code>
-
-        p All user edits to the <code>repo</code> subdirectory (<code>/opt/boxen/repo/</code>)
+        p.strong All user edits to the <code>repo</code> subdirectory (<code>/opt/boxen/repo/</code>)
 
 section
     .vcenter
@@ -68,11 +69,11 @@ section
 
 section
     .vcenter
-        p
+        p.strong
             +warn
             | The *.lock files are great when you understand them, and generally stay out of your way even when you don't
-        p But they can be a bit of a pain when you merge in remote changes to the project...
-        p See <a href="https://github.com/boxen/our-boxen/blob/master/docs/faq.md">the FAQ</a>
+        p.strong But they can be a bit of a pain when you merge in remote changes to the project...
+        p.strong See <a href="https://github.com/boxen/our-boxen/blob/master/docs/faq.md">the FAQ</a>
 
 section
     .vcenter
@@ -80,7 +81,7 @@ section
 
         p Directory: <code>/opt/boxen/repo/modules/people</code>
 
-        p By default {user} is based on your GitHub user ID
+        p.strong By default {user} is based on your GitHub user ID
         p However, you can leverage parts and pieces from other users
 
         table
@@ -117,7 +118,7 @@ section
                 include people::jdigger::osx
             }
 
-        p Just as it's good practice in OOD to delegate low-level details to subclasses, you should do the same in Puppet class design as well
+        p.strong Just as it's good practice in OOD to delegate low-level details to subclasses, you should do the same in Puppet class design as well
 
 section
     .vcenter
@@ -153,7 +154,7 @@ section
         p: a(href="https://github.com/rodjek/librarian-puppet") Puppet Librarian usage/syntax
             +external
 
-        p some standard entries
+        p.strong some standard entries
         pre: code.puppet.
             github "dnsmasq",  "1.0.1"
             github "gcc",      "2.0.100"
@@ -202,3 +203,7 @@ section
             #..
 
         p The "cached" values for those are in <code>/opt/boxen/config/boxen/defaults.json</code>
+
+section
+    .vcenter
+        p.strong You can set your own personal/private custom Facts in <code>~/.boxen/config.json</code>

@@ -1,0 +1,27 @@
+section
+    .vcenter
+        h2 Use Case: Private vs Personal
+
+        p.strong Typical personal configuration goes in <code>modules/${::github_login}</code>, which is <u>public</u> to a boxen repo
+        p.strong This is generally&nbsp;
+            a(href="http://zachholman.com/2010/08/dotfiles-are-meant-to-be-forked/")a <u>very</u> good thing
+                +external
+
+section
+    .vcenter
+        p.srong
+            +warn
+            | However, some facts do not belong in a public location (Passwords, SSH keys, OAuth tokens, etc.)
+            +warn
+
+section
+    .vcenter
+        p.strong For configuration that can easily be turned into "data" -- especially if it would be used in multiple places when configuring the system (e.g., user names and passwords) -- the <code>~/.boxen/config.json</code> file is perfect
+
+section
+    .vcenter
+        p.strong For configuration that's more complex, like your <code>~/.ssh</code> directory, create a private https://bitbucket.org/[BitBucket repository], or encrypted .zip in Dropbox, or ...
+
+section
+    .vcenter
+        p.strong Keep it <u>simple</u> and secure: You want it to be easily accessible before the rest of your system is set up

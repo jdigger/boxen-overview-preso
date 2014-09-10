@@ -1,0 +1,187 @@
+section
+    h1 Tips
+
+section
+    .vcenter
+        h2 General
+
+        ul
+            li Use the <code>--noop</code> option
+            li <b>Don't install/configure your machine except via Boxen</b> (this is a culture shift, but worth it)
+            li The <code>--debug</code> output has a wealth of information, but can be overwhealming
+            li Don't forget it's all code and backed by git: use the forking and branching processes you normally would
+            li Design your classes using parameters and facts, keeping Hiera in mind
+            li Especially if you're creating modules "for realz" (or are just suitably paranoid), run in a VM: <a href="http://thezinx.com/2013/10/29/create-bootable-dmg-iso-mavericks-app.html">Creating an ISO</a>
+
+section
+    .vcenter
+        h2 Infrastructure As Code
+
+        p: b Don't forget it's all code and backed by git
+
+        p Use the forking and branching processes you normally would
+
+        p merge with the upstream (e.g., <code>boxen/our-boxen</code>) often
+        pre: code.puppet.
+            git remote add boxen https://github.com/boxen/our-boxen.git
+            git fetch --all
+            git merge boxen/master
+        p
+            +warn
+            | When you get merge conflicts on <code>*.lock</code> files, <a href="https://github.com/boxen/our-boxen/blob/master/docs/faq.md">see the FAQ</a>
+
+section
+        h1 Make use of other people's modules, and post your own!
+
+section
+    .vcenter
+        h2 Re-use by Module
+
+        p Create <code>modules/packages/</code> for general-purpose Puppet classes to share across users or projects
+
+        p.strong Publish useful packages
+
+        p OSS benefits all, and the "packages" module and its like should be considered temporary/stop-gap
+
+        p This also works well for "proprietary" software/configurations (though those may be published on an internal repo instead of a public one)
+
+section
+    .vcenter
+        h2 Avoid 'node default'
+
+        p The default <code>repo/manifests/site.pp</code> contains a <code>node default</code> section that will get loaded up on every machine
+
+section
+    .vcenter
+        p.strong There's two problems with it:
+        ul
+            li The "out of the box" list contains a bunch of stuff that non-GitHub.com people may or may not care about having loaded up on their machine (e.g. NodeJS, ngnix, 4 versions of Ruby)
+            li <code>node default</code> doesn't allow changing configuration values, etc.
+
+section
+    .vcenter
+        p.strong It's a legacy of Puppet 1.0, long before much more flexible mechanisms like Hiera
+
+section
+    .vcenter
+        h2 Use Hiera
+
+        p A much better approach is replace 'node default' in 'site.pp' with
+        pre: code.puppet.
+            if hiera_array('classes', undef) {
+              hiera_include('classes')
+            }
+
+        p Then, if you want to make sure everyone's got Ruby set up, set <code>hiera/common.yaml</code>
+        pre: code.yaml.
+            classes:
+              - ruby::global
+            ruby::global::version: "2.1.1"
+            ruby::rbenv_plugins:
+              ruby-build:
+                ensure: v20140420
+                source: sstephenson/ruby-build
+
+section
+    .vcenter
+        h2 Hiera Power
+
+        p With <u><a href="https://github.com/jdigger/boxen/blob/d5502c936d5d7aaa0212a6d2fb00f2d0d6be4c70/modules/packages/manifests/sublime_text_2_package_management.pp">a simple shim</a></u> you can do things like...
+
+section
+    .vcenter
+        p hiera/developer.yaml
+        pre: code.yaml.
+            sublime_text_2::packages:
+              'BracketHighlighter':
+                source: 'facelessuser/BracketHighlighter'
+              'CodeIntel':
+                source: 'SublimeCodeIntel/SublimeCodeIntel'
+              'Git':
+                source: 'kemayo/sublime-text-git'
+              'GitGutter':
+                source: 'jisaacks/GitGutter'
+
+section
+    .vcenter
+        p hiera/users/jdigger.yaml
+        pre: code.yaml.
+            sublime_text_2::packages:
+              'AsciiDoc':
+                source: 'SublimeText/AsciiDoc'
+              'Markdown-Preview':
+                source: 'revolunet/sublimetext-markdown-preview'
+              'PrettyJson':
+                source: 'dzhibas/SublimePrettyJson'
+              'Puppet':
+                source: 'russCloak/SublimePuppet'
+
+section
+    .vcenter
+        h2 Hiera Structure
+
+        p For example in <code>repo/config/hiera.yaml</code>
+        pre: code.yaml.
+            ---
+            :merge_behavior: deeper
+            :backends:
+              - yaml
+            :yaml:
+              :datadir: "%{::boxen_home}/repo/hiera"
+            :hierarchy:
+              - "users/%{::github_login}/nodes/%{::hostname}"
+              - "users/%{::github_login}/nodes/common"
+              - "users/%{::github_login}"
+              - "projects/%{::boxen_project_01}"
+              - "projects/%{::boxen_project_02}"
+              - "projects/%{::boxen_project_03}"
+              - "projects/%{::boxen_project_04}"
+              - "projects/%{::boxen_project_05}"
+              - "projects/%{::boxen_project_06}"
+              - "projects/%{::boxen_project_07}"
+              - "projects/%{::boxen_project_08}"
+              - "projects/%{::boxen_project_09}"
+              - "projects/%{::boxen_project_10}"
+              - "projects/common"
+              - "common"
+
+section
+    .vcenter
+        h2 Roles
+
+        p More advanced, but it can be worth borrowing some techniques from Puppet Enterprise
+
+section
+    .vcenter
+        p modules/people/jdigger/applications.pp
+        pre: code.puppet.
+            class people::jdigger::applications ($system_roles = undef) {
+              $_system_roles = hiera_array('people::jdigger::system_roles', [])
+              $roles = $system_roles ? { undef => $_system_roles, default => $system_roles}
+
+              include people::jdigger::applications::general
+
+              if member($roles, 'work') {
+                include 'people::jdigger::applications::work'
+              }
+              if member($roles, 'personal') {
+                include 'people::jdigger::applications::personal'
+              }
+            }
+
+section
+    .vcenter
+        p hiera/users/jdigger/nodes/imac.yaml
+        pre: code.yaml.
+            boxen::security::require_password: false
+            people::jdigger::system_roles:
+              - personal
+
+section
+    .vcenter
+        p modules/people/jdigger/applications/personal.pp
+        pre: code.puppet.
+            class people::jdigger::applications::personal {
+              include 'calibre'
+              include 'steam'
+            }

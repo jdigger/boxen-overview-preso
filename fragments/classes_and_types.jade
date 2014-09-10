@@ -87,14 +87,16 @@ section
         p Separates usage from configuration
 
 section
-    .vcenter
-        h2 Defined Types
-        p Defined Types are similar to Classes, providing scoping, resource management, ability to pass in parameters, etc.
+    h1 Defined Types
 
 section
     .vcenter
-        p Unlike Classes, you can have multiple instances of Defined Types.
-        p Because of that, you can't use <code>include</code> or tools like Hiera to configure them.
+        p.strong Defined Types are similar to Classes, providing scoping, resource management, ability to pass in parameters, etc.
+
+section
+    .vcenter
+        p.strong Unlike Classes, you can have multiple instances of Defined Types.
+        p.strong Because of that, you can't use <code>include</code> or tools like Hiera to configure them.
 
 section
     .vcenter
@@ -112,4 +114,4 @@ section
     .vcenter
         p
             +tip
-            | If you're trying to decide between declaring something <code>class</code> or <code>define</code>, err toward <code>class</code>
+        p.strong If you're trying to decide between declaring something <code>class</code> or <code>define</code>, err toward <code>class</code>

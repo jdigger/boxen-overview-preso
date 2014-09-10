@@ -1,0 +1,203 @@
+section
+    .vcenter
+        h2 Packages
+
+        p Packages are the primary way software is installed.
+            a(href="http://docs.puppetlabs.com/references/latest/type.html#package")
+                +external
+
+        p Simple example:
+
+        pre: code.puppet.
+            package { 'gradle':
+                ensure   => "installed", # *
+                provider => "homebrew",
+            }
+
+            package { "IntelliJ-IC-12.1.4":
+                provider => 'appdmg_eula',
+                source   => "http://download.jetbrains.com/idea/ideaIC-12.1.4.dmg",
+            }
+
+        p * typically defaults to "present". Valid values vary by resource type & provider.  May include <b>installed, latest, absent,</b> or a specific version/version range (e.g., <b>">= 1.12"</b>)
+
+section
+    h1 Other Resources
+
+section
+    .vcenter
+        h2 File
+
+        p: a(href="http://docs.puppetlabs.com/references/latest/type.html#file") Puppet File Documentation
+            +external
+
+        pre: code.puppet.
+            $home = "/Users/${::boxen_user}" # 1
+
+            file { "${home}/.zshrc":
+              source => 'puppet:///modules/people/jdigger/zshrc', # 2
+            }
+
+            file { "${home}/.zshenv":
+              content => template('people/jdigger/zshenv.erb'), # 3
+            }
+        ol
+            li define a variable based on a "fact"
+            li a static file from a module
+            li set the content from a template (Ruby ERB by default)
+
+section
+    .vcenter
+        h2 Repository
+
+        p: a(href="https://github.com/boxen/puppet-repository") GitHub Repository
+            +external
+
+        pre: code.puppet.
+            $home = "/Users/${::boxen_user}"
+            $srcdir = "${home}/src"
+
+            repository { "${srcdir}/git-process" :
+              source   => 'https://github.com/jdigger/git-process.git',
+              path     => "${srcdir}/git-process",
+              provider => 'git',
+            }
+
+section
+    .vcenter
+        h2 Ruby Gem
+
+        pre: code.puppet.
+            $ruby_version = '1.9.3'
+
+            ruby::gem { "git-process for ${ruby_version}": # 1
+                gem     => 'git-process',
+                ruby    => $ruby_version, # 2
+                version => '~> 2.0', # 3
+            }
+
+        ol
+            li because there could be potentially more than one installation of the gem (in the various rbenv versions) it's a good idea to put the Ruby version in the resource name so it is guaranteed to be unique
+            li the version of Ruby (using rbenv) to install the gem into
+            li of course gem versions can use the semantic versioning support of Ruby Gems
+
+section
+    .vcenter
+        h2 Plist
+
+        p example of configuring Adium
+        pre: code.puppet.
+            property_list_key { 'Adium users':
+              path       => "${home}/Library/Application Support/Adium 2.0/Users/Default/Accounts.plist",
+              key        => 'Accounts',
+              value      => [
+                {
+                  'Service'  => 'GTalk',
+                  'UID'      => $gtalk_name,
+                  'Type'     => 'libpurple-jabber-gtalk',
+                  'ObjectID' => '1',
+                },
+                {
+                  'Service'  => 'Yahoo!',
+                  'UID'      => $yahoo_name,
+                  'Type'     => 'libpurple-Yahoo!',
+                  'ObjectID' => '2',
+                },
+                {
+                  'Service'  => 'AIM',
+                  'UID'      => $aim_name,
+                  'Type'     => 'libpurple-oscar-AIM',
+                  'ObjectID' => '3',
+                },
+              ],
+              value_type => 'array',
+            }
+
+section
+    .vcenter
+        p Requires the <a href="https://github.com/glarizza/puppet-property_list_key">"glarizza/puppet-property_list_key" module</a>
+        p See the <a href="https://developer.apple.com/librarY/mac/documentation/Darwin/Reference/ManPages/man1/plutil.1.html">plutil man page</a>
+
+section
+    .vcenter
+        h2 OSX
+        pre: code.puppet.
+            boxen::osx_defaults { 'scrollbars always on':
+              domain => 'NSGlobalDomain',
+              key    => 'AppleShowScrollBars',
+              value  => 'Always',
+              user   => $::boxen_user,
+            }
+
+            osx::recovery_message { 'If this Mac is found, please call 555-555-5555': }
+
+            include osx::finder::unhide_library
+
+        p See the <a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/defaults.1.html">defaults man page</a>
+
+        p An awesome list of available settings/tools can be found at <a href="https://github.com/kevinSuttle/OSXDefaults">OSXDefaults</a>
+
+section
+    .vcenter
+        h2 Exec
+
+        p: a(href="http://docs.puppetlabs.com/references/latest/type.html#exec") Puppet Exec Documentation
+            +external
+
+        pre: code.puppet.
+            $source_tgz =
+                'http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz' # 1
+
+            exec { 'install gjslint': # 2
+                command => "easy_install ${source_tgz}",
+                user    => 'root', # 3
+                creates => '/usr/local/bin/gjslint', # 4
+            }
+        ol
+            li should come in as part of a class definition...
+            li arbitrary resource name: if "command" not given, this is used, but generally best to give it a "meaningful" name
+            li the user to <code>sudo</code> as when executing the command
+            li before running the command the existence of this file is checked; if it's there it's assume this has already run
+
+section
+    .vcenter
+        p Instead of "creates", you can use "onlyif"/"unless" to run a command, such as
+        pre: code.puppet.
+            unless => 'grep root /usr/lib/cron/cron.allow 2>/dev/null'
+
+include ./classes_and_types.jade
+
+section
+    h1 Resource Defaults
+
+section
+    .vcenter
+        p repo/manifests/site.pp (simplified)
+        pre: code.puppet.
+            Exec {
+              group => 'staff',
+              user  => $boxen_user,
+              path  => [
+                "${boxen::config::home}/rbenv/shims",
+                "${boxen::config::home}/rbenv/bin",
+                "${boxen::config::home}/homebrew/bin",
+                '/usr/bin', '/bin', '/usr/sbin', '/sbin',
+              ],
+            }
+
+            File {
+              group => 'staff',
+              owner => $boxen_user,
+            }
+
+            Package {
+              provider => homebrew,
+            }
+
+            Repository {
+              provider => git,
+            }
+
+            Service {
+              provider => ghlaunchd,
+            }
