@@ -19,6 +19,8 @@ i.fa.fa-external-link {
 
 .tip {
   color: blue; }
+  .tip i.fa-circle {
+    font-size: 2em; }
 
 .fa-exclamation-triangle {
   color: red;
@@ -61,3 +63,5 @@ code.puppet span.comment {
 
 code.yaml span.comment {
   color: lightblue; }
+
+/*# sourceMappingURL=preso.css.map */
